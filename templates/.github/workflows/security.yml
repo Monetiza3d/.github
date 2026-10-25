@@ -14,6 +14,6 @@ permissions:
 
 jobs:
   security:
-    uses: Monetiza3d/.github/.github/workflows/security-reusable.yml@eae2c0dca6783edb65696a61ce6ae710711bbc9a
+    uses: Monetiza3d/.github/.github/workflows/security-reusable.yml@d42370fa5f062a57874d6ce6dc5b5780397117f2
     with:
       scan_containers: true
