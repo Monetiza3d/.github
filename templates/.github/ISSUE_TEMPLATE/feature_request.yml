@@ -1,0 +1,45 @@
+name: Feature request
+description: Propose a user or operator capability.
+title: "feat: "
+body:
+  - type: input
+    id: domain
+    attributes:
+      label: Affected domain or service
+      placeholder: inventory-service
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Who has the problem, and in what workflow?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance examples
+      description: Describe observable outcomes without prescribing an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: impacts
+    attributes:
+      label: Data, API, security, and operational impacts
+      description: Note known cross-service contracts, tenant data, migrations, or deployment concerns.
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: This proposal contains no secrets or customer data.
+          required: true

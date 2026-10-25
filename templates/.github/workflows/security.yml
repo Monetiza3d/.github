@@ -1,0 +1,19 @@
+name: Security
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 12 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    uses: Monetiza3d/.github/.github/workflows/security-reusable.yml@<REPLACE_WITH_REVIEWED_CORE_SHA>
+    with:
+      scan_containers: true

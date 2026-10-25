@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a reproducible defect in a Monetiza3D project.
+title: "bug: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include credentials, customer data, or vulnerability details. Use the private process in `SECURITY.md` for security issues.
+  - type: input
+    id: repository
+    attributes:
+      label: Affected service or repository
+      placeholder: inventory-service
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest reliable reproduction and sanitized diagnostics.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Runtime/container version, OS or Kubernetes version when relevant.
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I removed credentials, personal data, and confidential customer information.
+          required: true
+        - label: This is not a security vulnerability report.
+          required: true

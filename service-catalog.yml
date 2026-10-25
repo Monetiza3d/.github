@@ -1,0 +1,50 @@
+schema_version: 1
+organization: Monetiza3d
+repository_policy:
+  product_repositories: separate
+  monorepos: prohibited
+  default_visibility: private
+  containers_from_first_implementation: true
+  orchestration_target: Kubernetes
+domains:
+  - phase: 1
+    repository: identity-service
+    context: IAM, identity, tenancy, and governance
+    runtime: TypeScript
+  - phase: 2
+    repository: inventory-service
+    context: Inventory 360 and manufacturing supplies
+    runtime: TypeScript
+  - phase: 3
+    repository: cost-engine-service
+    context: Cost calculation, pricing, and quotations
+    runtime: TypeScript
+  - phase: 4
+    repository: order-management-service
+    context: Orders, sales, and operational CRM
+    runtime: TypeScript
+  - phase: 5
+    repository: printer-fleet-service
+    context: Printer fleet and cloud-side IoT
+    runtime: TypeScript
+  - phase: 5
+    repository: edge-agent
+    context: Local printer connectivity and telemetry
+    runtime: deferred; choose Go or Rust after hardware requirements
+  - phase: 6
+    repository: affiliate-broker-service
+    context: Supplier, purchasing, and affiliate integrations
+    runtime: TypeScript
+  - phase: 7
+    repository: global-admin-analytics-service
+    context: Platform administration and privacy-preserving analytics
+    runtime: TypeScript
+surfaces:
+  - repository: portal
+    context: Authenticated React web application
+  - repository: brand-site
+    context: Public Monetiza3D brand website
+  - repository: bff
+    context: Portal-facing backend-for-frontend; no domain data ownership
+  - repository: platform-infra
+    context: Container registry, deployment, observability, and Kubernetes platform

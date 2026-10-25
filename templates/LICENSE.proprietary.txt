@@ -1,0 +1,5 @@
+Copyright (c) [YEAR] [LEGAL ENTITY NAME]. All rights reserved.
+
+This software and its associated documentation are proprietary and confidential. No license, express or implied, is granted to use, reproduce, modify, distribute, sublicense, or create derivative works from this software without prior written permission from [LEGAL ENTITY NAME].
+
+Replace every bracketed value and obtain legal review before use. This template is not a substitute for a signed assignment of rights from authors or contributors to the legal entity.

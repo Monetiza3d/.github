@@ -1,0 +1,22 @@
+name: Documentation correction
+description: Report missing, outdated, or incorrect project documentation.
+title: "docs: "
+body:
+  - type: input
+    id: document
+    attributes:
+      label: Document or URL
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is incorrect or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Suggested correction or official reference
+    validations:
+      required: true

@@ -1,0 +1,160 @@
+name: Reusable security checks
+
+on:
+  workflow_call:
+    inputs:
+      scan_containers:
+        description: Scan container and IaC inputs with Trivy
+        type: boolean
+        required: false
+        default: false
+
+permissions: {}
+
+jobs:
+  trufflehog:
+    name: Verified secret scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout complete history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Scan Git history without printing secret output
+        shell: bash
+        run: |
+          set -uo pipefail
+          result_file="${RUNNER_TEMP}/trufflehog-results.jsonl"
+          error_file="${RUNNER_TEMP}/trufflehog-stderr.log"
+          trap 'rm -f "$result_file" "$error_file"' EXIT
+
+          set +e
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/src:ro" \
+            -w /src \
+            ghcr.io/trufflesecurity/trufflehog@sha256:0d003fc3abc4e1565eca8462b992001314de51451e96e3c44de80d116794d5d1 \
+            git file:///src --results=verified --json --fail --no-update \
+            >"$result_file" 2>"$error_file"
+          scan_status=$?
+          set -e
+
+          python3 - "$result_file" "$scan_status" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          path = pathlib.Path(sys.argv[1])
+          scan_status = int(sys.argv[2])
+          verified = 0
+          malformed = False
+          if path.exists():
+              for line in path.read_text(errors="replace").splitlines():
+                  if not line.strip():
+                      continue
+                  try:
+                      record = json.loads(line)
+                  except json.JSONDecodeError:
+                      malformed = True
+                      continue
+                  verified += int(record.get("Verified") is True)
+
+          if verified:
+              print(f"::error::TruffleHog found {verified} verified secret(s); scanner output is suppressed. Revoke/rotate and remediate the affected history.")
+              raise SystemExit(1)
+          if scan_status != 0 or malformed:
+              print("::error::TruffleHog did not complete cleanly; raw scanner output is suppressed.")
+              raise SystemExit(1)
+          print("TruffleHog: no verified secrets found.")
+          PY
+
+  opengrep:
+    name: OpenGrep SAST
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Scan with OpenGrep
+        uses: platform-sec/opengrep-action@4c19a88ebb98ab9fb77993cb6d16b078740fad1e # v2.0.1
+        with:
+          target: .
+          output-format: json
+          output-file: ${{ runner.temp }}/opengrep-results.json
+          severity: ERROR
+          strict: true
+          opengrep-version: "1.32.0"
+          verify-signature: true
+
+  osv:
+    name: OSV dependency delta gate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout complete history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Compare dependency vulnerabilities
+        uses: Monetiza3d/.github/actions/osv-delta@a85f19759b9272c5413ea26f272b8481563106c0
+        with:
+          base_sha: ${{ github.event.pull_request.base.sha || '' }}
+
+  workflow-security:
+    name: GitHub Actions security
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install and verify actionlint
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="${RUNNER_TEMP}/actionlint.tar.gz"
+          checksums="${RUNNER_TEMP}/actionlint-checksums.txt"
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$archive"
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_checksums.txt -o "$checksums"
+          (cd "${RUNNER_TEMP}" && grep 'actionlint_1.7.12_linux_amd64.tar.gz$' "$checksums" | sha256sum --check --status)
+          tar -xzf "$archive" -C "${RUNNER_TEMP}" actionlint
+          "${RUNNER_TEMP}/actionlint" -color
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
+        with:
+          inputs: .github/workflows
+          version: "1.31.1"
+          min-severity: high
+          advanced-security: false
+          annotations: true
+          online-audits: false
+
+  trivy:
+    name: Container and IaC scan
+    if: ${{ inputs.scan_containers }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Scan filesystem, container definitions, and IaC
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          version: "0.76.1"
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: "1"

@@ -2,6 +2,10 @@
   "verified_on": "2026-10-25",
   "policy": "Use latest stable supported releases verified from official sources; pins are refreshed by reviewed dependency updates.",
   "tools": {
+    "osv_delta_action": {
+      "commit": "a85f19759b9272c5413ea26f272b8481563106c0",
+      "source": "https://github.com/Monetiza3d/.github/tree/a85f19759b9272c5413ea26f272b8481563106c0/actions/osv-delta"
+    },
     "opengrep": {
       "version": "1.32.0",
       "release_repository": "opengrep/opengrep",
@@ -69,6 +73,10 @@
       "sha": "949feb2413d6458794dcd2491c4babbbce0c15c1",
       "release_repository": "actions/setup-node",
       "source": "https://github.com/actions/setup-node/releases"
+    },
+    "core_workflow": {
+      "commit": "PENDING",
+      "source": "https://github.com/Monetiza3d/.github/.github/workflows/security-reusable.yml"
     }
   }
 }
