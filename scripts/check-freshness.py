@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -16,33 +17,30 @@ MANIFEST = ROOT / "tool-versions.json"
 
 
 def latest_release(repository: str) -> str:
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "User-Agent": "Monetiza3d-version-freshness",
-    }
-    token = os.environ.get("GITHUB_TOKEN")
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
     request = urllib.request.Request(
-        f"https://api.github.com/repos/{repository}/releases/latest", headers=headers
+        f"https://github.com/{repository}/releases/latest",
+        headers={"User-Agent": "Monetiza3d-version-freshness"},
     )
     with urllib.request.urlopen(request, timeout=20) as response:
-        return json.load(response)["tag_name"]
+        final_url = response.geturl()
+    marker = "/releases/tag/"
+    if marker not in final_url:
+        raise ValueError(f"Could not resolve latest release for {repository}")
+    return final_url.split(marker, 1)[1].split("/", 1)[0]
 
 
 def tag_commit(repository: str, tag: str) -> str:
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "User-Agent": "Monetiza3d-version-freshness",
-    }
-    token = os.environ.get("GITHUB_TOKEN")
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
-    request = urllib.request.Request(
-        f"https://api.github.com/repos/{repository}/commits/{tag}", headers=headers
+    result = subprocess.run(
+        ["git", "ls-remote", f"https://github.com/{repository}.git", f"refs/tags/{tag}", f"refs/tags/{tag}^{{}}"],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=20,
     )
-    with urllib.request.urlopen(request, timeout=20) as response:
-        return json.load(response)["sha"]
+    refs = [line.split()[0] for line in result.stdout.splitlines() if line.strip()]
+    if not refs:
+        raise ValueError(f"Could not resolve release tag for {repository}")
+    return refs[-1]
 
 
 def ghcr_manifest_digest(image: str) -> str:
@@ -95,7 +93,7 @@ def main() -> int:
         except urllib.error.HTTPError as error:
             errors.append(f"{name} (HTTP {error.code})")
             continue
-        except (KeyError, OSError, urllib.error.URLError, json.JSONDecodeError):
+        except (KeyError, OSError, ValueError, subprocess.SubprocessError, urllib.error.URLError, json.JSONDecodeError):
             errors.append(name)
             continue
         if normalize(item["version"]) != normalize(latest):
@@ -133,7 +131,7 @@ def main() -> int:
             )
     except urllib.error.HTTPError as error:
         errors.append(f"trufflehog container image digest (HTTP {error.code})")
-    except (KeyError, OSError, urllib.error.URLError, json.JSONDecodeError):
+    except (KeyError, OSError, ValueError, subprocess.SubprocessError, urllib.error.URLError, json.JSONDecodeError):
         errors.append("trufflehog container image digest")
 
     if errors:

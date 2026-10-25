@@ -1,6 +1,11 @@
 name: Reusable security checks
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
   workflow_call:
     inputs:
       scan_containers:
