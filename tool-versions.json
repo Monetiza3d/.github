@@ -75,7 +75,7 @@
       "source": "https://github.com/actions/setup-node/releases"
     },
     "core_workflow": {
-      "commit": "PENDING",
+      "commit": "eae2c0dca6783edb65696a61ce6ae710711bbc9a",
       "source": "https://github.com/Monetiza3d/.github/.github/workflows/security-reusable.yml"
     }
   }
