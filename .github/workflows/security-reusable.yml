@@ -109,7 +109,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Compare dependency vulnerabilities
-        uses: Monetiza3d/.github/actions/osv-delta@f2263ffdcede5c7eec2dc503257142d50fdf9db8
+        uses: Monetiza3d/.github/actions/osv-delta@5d7b85a9cbee2518ca908634e4b115c66c7c6896
         with:
           base_sha: ${{ github.event.pull_request.base.sha || '' }}
 
