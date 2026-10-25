@@ -101,6 +101,7 @@ def main() -> int:
 
     inline_pins = {
         "opengrep": f'opengrep-version: "{manifest["tools"]["opengrep"]["version"]}"',
+        "opengrep_checksum": f'opengrep-checksum: "{manifest["tools"]["opengrep"]["sha256"]}"',
         "trufflehog": f'ghcr.io/trufflesecurity/trufflehog@{manifest["tools"]["trufflehog"]["container_digest"]}',
         "actions_checkout": f'actions/checkout@{manifest["tools"]["actions_checkout"]["sha"]}',
         "osv_delta_action": f'Monetiza3d/.github/actions/osv-delta@{manifest["tools"]["osv_delta_action"]["commit"]}',

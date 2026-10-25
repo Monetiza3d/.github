@@ -3,13 +3,14 @@
   "policy": "Use latest stable supported releases verified from official sources; pins are refreshed by reviewed dependency updates.",
   "tools": {
     "osv_delta_action": {
-      "commit": "a85f19759b9272c5413ea26f272b8481563106c0",
-      "source": "https://github.com/Monetiza3d/.github/tree/a85f19759b9272c5413ea26f272b8481563106c0/actions/osv-delta"
+      "commit": "f2263ffdcede5c7eec2dc503257142d50fdf9db8",
+      "source": "https://github.com/Monetiza3d/.github/tree/f2263ffdcede5c7eec2dc503257142d50fdf9db8/actions/osv-delta"
     },
     "opengrep": {
       "version": "1.32.0",
       "release_repository": "opengrep/opengrep",
-      "source": "https://github.com/opengrep/opengrep/releases"
+      "source": "https://github.com/opengrep/opengrep/releases",
+      "sha256": "7360d60174880bd9214f2dfbe439b7bce82b7a3d44cfe945ba833c85cc8bda75"
     },
     "opengrep_action": {
       "uses": "platform-sec/opengrep-action",

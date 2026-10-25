@@ -94,7 +94,8 @@ jobs:
           severity: ERROR
           strict: true
           opengrep-version: "1.32.0"
-          verify-signature: true
+          opengrep-checksum: "7360d60174880bd9214f2dfbe439b7bce82b7a3d44cfe945ba833c85cc8bda75"
+          verify-signature: false
 
   osv:
     name: OSV dependency delta gate
@@ -108,7 +109,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Compare dependency vulnerabilities
-        uses: Monetiza3d/.github/actions/osv-delta@a85f19759b9272c5413ea26f272b8481563106c0
+        uses: Monetiza3d/.github/actions/osv-delta@f2263ffdcede5c7eec2dc503257142d50fdf9db8
         with:
           base_sha: ${{ github.event.pull_request.base.sha || '' }}
 
@@ -126,7 +127,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          archive="${RUNNER_TEMP}/actionlint.tar.gz"
+          archive="${RUNNER_TEMP}/actionlint_1.7.12_linux_amd64.tar.gz"
           checksums="${RUNNER_TEMP}/actionlint-checksums.txt"
           curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$archive"
           curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_checksums.txt -o "$checksums"
