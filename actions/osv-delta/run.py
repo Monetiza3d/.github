@@ -38,6 +38,9 @@ def scan(binary: Path, directory: Path, output: Path) -> tuple[int, dict]:
     )
     output.write_text(result.stdout)
     if not result.stdout.strip():
+        if "No package sources found" in result.stderr:
+            output.write_text('{"results": []}\n')
+            return 0, {"results": []}
         raise RuntimeError("OSV-Scanner produced no report")
     import json
 
