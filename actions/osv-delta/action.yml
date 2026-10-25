@@ -1,0 +1,14 @@
+name: OSV dependency delta gate
+description: Scan dependency manifests with pinned OSV-Scanner and block newly introduced High/Critical findings.
+inputs:
+  base_sha:
+    description: Base commit for a pull request; omit on default-branch pushes to scan all findings.
+    required: false
+    default: ""
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        INPUT_BASE_SHA: ${{ inputs.base_sha }}
+      run: python3 "${GITHUB_ACTION_PATH}/run.py"

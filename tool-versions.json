@@ -1,0 +1,74 @@
+{
+  "verified_on": "2026-10-25",
+  "policy": "Use latest stable supported releases verified from official sources; pins are refreshed by reviewed dependency updates.",
+  "tools": {
+    "opengrep": {
+      "version": "1.32.0",
+      "release_repository": "opengrep/opengrep",
+      "source": "https://github.com/opengrep/opengrep/releases"
+    },
+    "opengrep_action": {
+      "uses": "platform-sec/opengrep-action",
+      "version": "v2.0.1",
+      "sha": "4c19a88ebb98ab9fb77993cb6d16b078740fad1e",
+      "release_repository": "platform-sec/opengrep-action",
+      "source": "https://github.com/platform-sec/opengrep-action/releases"
+    },
+    "trufflehog": {
+      "version": "3.99.7",
+      "release_repository": "trufflesecurity/trufflehog",
+      "container_image": "ghcr.io/trufflesecurity/trufflehog:3.99.7",
+      "container_digest": "sha256:0d003fc3abc4e1565eca8462b992001314de51451e96e3c44de80d116794d5d1",
+      "source": "https://github.com/trufflesecurity/trufflehog/releases"
+    },
+    "osv_scanner": {
+      "version": "2.7.0",
+      "sha256": "160c6253e2922e9e0a6a9771c5c4c40a4b3c6090b34a3cdd5e80c96cc2e4218b",
+      "release_repository": "google/osv-scanner",
+      "source": "https://github.com/google/osv-scanner/releases"
+    },
+    "trivy": {
+      "version": "0.76.1",
+      "release_repository": "aquasecurity/trivy",
+      "source": "https://github.com/aquasecurity/trivy/releases"
+    },
+    "trivy_action": {
+      "uses": "aquasecurity/trivy-action",
+      "version": "v0.36.0",
+      "sha": "ed142fd0673e97e23eac54620cfb913e5ce36c25",
+      "release_repository": "aquasecurity/trivy-action",
+      "source": "https://github.com/aquasecurity/trivy-action/releases"
+    },
+    "zizmor": {
+      "version": "1.31.1",
+      "release_repository": "zizmorcore/zizmor",
+      "source": "https://github.com/zizmorcore/zizmor/releases"
+    },
+    "zizmor_action": {
+      "uses": "zizmorcore/zizmor-action",
+      "version": "v0.8.0",
+      "sha": "53290badfa369cb0bf7ad16342cb62c2fa47ac7b",
+      "release_repository": "zizmorcore/zizmor-action",
+      "source": "https://github.com/zizmorcore/zizmor-action/releases"
+    },
+    "actionlint": {
+      "version": "1.7.12",
+      "release_repository": "rhysd/actionlint",
+      "source": "https://github.com/rhysd/actionlint/releases"
+    },
+    "actions_checkout": {
+      "uses": "actions/checkout",
+      "version": "v7.0.1",
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "release_repository": "actions/checkout",
+      "source": "https://github.com/actions/checkout/releases"
+    },
+    "actions_setup_node": {
+      "uses": "actions/setup-node",
+      "version": "v7.1.0",
+      "sha": "949feb2413d6458794dcd2491c4babbbce0c15c1",
+      "release_repository": "actions/setup-node",
+      "source": "https://github.com/actions/setup-node/releases"
+    }
+  }
+}
