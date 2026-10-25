@@ -153,8 +153,25 @@ def archive_base(base_sha: str, destination: Path) -> None:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE,
     )
+    root = destination.resolve()
     with tarfile.open(archive_path, "r:") as archive:
-        archive.extractall(destination, filter="data")
+        for member in archive:
+            target = (root / member.name).resolve()
+            try:
+                target.relative_to(root)
+            except ValueError as error:
+                raise RuntimeError("OSV baseline archive contains an unsafe path") from error
+            if member.isdir():
+                target.mkdir(parents=True, exist_ok=True)
+            elif member.isfile():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                source = archive.extractfile(member)
+                if source is None:
+                    raise RuntimeError("OSV baseline archive contains an unreadable file")
+                with source, target.open("wb") as output:
+                    shutil.copyfileobj(source, output)
+                target.chmod(member.mode & 0o777)
+            # Symlinks, hardlinks, and special files are not needed for dependency scans.
 
 
 def main() -> int:
